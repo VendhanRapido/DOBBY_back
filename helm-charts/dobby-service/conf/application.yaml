@@ -1,0 +1,9 @@
+log:
+  level: {{key "rapido/dobby-service/svc/logLevel"}}
+
+server:
+  host: localhost
+  port: 8080
+
+environment: {{key "rapido/dobby-service/svc/environment"}}
+profilingEnabled: {{key "rapido/dobby-service/svc/profilingEnabled"}}

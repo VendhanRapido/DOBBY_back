@@ -1,0 +1,11 @@
+environment: development
+
+hpa:
+  enabled: false
+
+replicaCount: 1
+
+resources:
+  enabled: false
+
+preemptible_workload: true

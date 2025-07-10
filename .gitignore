@@ -1,0 +1,6 @@
+*.checksum
+artifacts/
+out/
+.idea/*
+coverage-all.out
+cover.out.tmp
