@@ -26,8 +26,8 @@ jobs:
 
       - name: Install Cursor Agent
         run: |
-          curl -fsSL https://cursor.sh/agent/install.sh | bash
-          echo "$HOME/.cursor-agent/bin" >> $GITHUB_PATH
+          curl -fsS https://cursor.com/install | bash
+          echo "$HOME/.cursor/bin" >> $GITHUB_PATH
           cursor-agent --version
 
       - name: Export Cursor API key
