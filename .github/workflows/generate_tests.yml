@@ -55,11 +55,12 @@ jobs:
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
         run: |
-          # Split lines into array
-          IFS=$'\n' read -rd '' -a files <<< "${{ steps.changed.outputs.changed_files }}"
-          
+          # Read each line into an array safely
+          IFS=$'\n' read -r -a files <<< "${{ steps.changed.outputs.changed_files }}"
+
           for file in "${files[@]}"; do
             if [[ -n "$file" ]]; then
+              echo "Generating tests for: $file"
               scripts/generate_tests_for_file.sh "$file"
             fi
           done
