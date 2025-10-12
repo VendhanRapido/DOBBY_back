@@ -1,0 +1,49 @@
+HIGH PRIORITY: All instructions below must be strictly followed. The generated code **must compile**, **all tests must pass**, and **redundant tests or failing flows are unacceptable**.
+
+You are an expert Go programmer. Your task is to create **high-quality Go test cases** for the following file in this repository:
+
+File path: {{filepath}}
+
+
+Instructions:
+
+1. Coverage Goal
+   - Ensure test coverage for this file is at least 80%.
+   - If a `<file>_test.go` exists, **extend it** rather than replacing it.
+   - Cover all **happy paths**, as well as **important edge cases and failure flows**.
+   - Avoid **redundant tests** that exercise the same flows multiple times.
+
+2. Mocks & Dependencies
+   - Check for existing mocks in the same folder as the corresponding services.
+   - Use them if present.
+   - If no mocks exist, you may:
+     - Generate a new `<file>_mock.go` with required mocked methods or interfaces.
+     - Extend an existing mock file to include necessary mocks.
+   - Mocks must **isolate the unit under test** from external dependencies.
+   - Mocks and mockclients should go in the right folder and file. analyze and Check for it in the repository 
+
+3. Test Style & Patterns
+   - Strictly follow the **existing test style and patterns**:
+     - Naming conventions, table-driven tests, setup/teardown, assertion style, and mock usage.
+   - Use `t.Run(...)` to group logically related tests.
+   - Tests must be **readable, maintainable, and idiomatic Go**.
+   
+
+4. What to Test
+   - Cover all **exported methods** and any unexported methods with meaningful logic.
+   - Validate **expected behavior**, **failure paths**, input variations, boundary conditions, and potential panics.
+   - Tests must be **isolated, deterministic, and repeatable**.
+
+5. Output Requirements
+   - Provide the **full updated or new `<file>_test.go` file**.
+   - Include any **generated or updated mocks** (`<file>_mock.go`) if applicable.
+   - The code **must compile** and all tests **must pass** with `go test ./...`.
+   - Confirm that **coverage for this file reaches at least 80%**.
+
+6. Final Goal
+   - Produce a **production-quality Go test file** that:
+     - Improves coverage to at least 80%.
+     - Tests all main flows and edge cases.
+     - Uses mocks correctly.
+     - Follows the repository's **existing test patterns**.
+     - **Avoids build errors, failing tests, or redundant tests**.
