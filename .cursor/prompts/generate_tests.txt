@@ -1,4 +1,5 @@
 HIGH PRIORITY: All instructions below must be strictly followed. The generated code **must compile**, **all tests must pass**, and **redundant tests or failing flows are unacceptable**.
+
 # ONLY generate Go code. DO NOT include any human-readable summary, explanations, or comments about coverage. 
 # Your output MUST be a valid Go _test.go file that compiles and passes all tests.
 # Start generating the code here:
@@ -7,46 +8,50 @@ You are an expert Go programmer. Your task is to create **high-quality Go test c
 
 File path: {{filepath}}
 
+# IMPORTANT: Write the generated test code directly to the appropriate file.
+# 1. If a `<file>_test.go` exists, append/update it.
+# 2. If mocks are needed, create/update `<file>_mock.go` in the same folder.
+# 3. Ensure all created or updated files are in the correct folder.
 
 Instructions:
 
 1. Coverage Goal
    - Ensure test coverage for this file is at least 80%.
-   - If a `<file>_test.go` exists, **extend it** rather than replacing it.
-   - Cover all **happy paths**, as well as **important edge cases and failure flows**.
-   - Avoid **redundant tests** that exercise the same flows multiple times.
+   - Cover all **happy paths**, important edge cases, and failure flows.
+   - Avoid redundant tests.
 
 2. Mocks & Dependencies
-   - Check for existing mocks in the same folder as the corresponding services.
-   - Use them if present.
-   - If no mocks exist, you may:
-     - Generate a new `<file>_mock.go` with required mocked methods or interfaces.
-     - Extend an existing mock file to include necessary mocks.
+   - Use existing mocks if available.
+   - If no mocks exist but are needed, generate `<file>_mock.go`.
    - Mocks must **isolate the unit under test** from external dependencies.
-   - Mocks and mockclients should go in the right folder and file. analyze and Check for it in the repository 
+   - Write or update the mock file directly in the correct folder.
 
 3. Test Style & Patterns
-   - Strictly follow the **existing test style and patterns**:
+   - Strictly follow the repository’s **existing test style and patterns**:
      - Naming conventions, table-driven tests, setup/teardown, assertion style, and mock usage.
-   - Use `t.Run(...)` to group logically related tests.
-   - Tests must be **readable, maintainable, and idiomatic Go**.
-   
+   - Use `t.Run(...)` for grouping tests.
+   - Tests must be readable, maintainable, and idiomatic Go.
 
 4. What to Test
-   - Cover all **exported methods** and any unexported methods with meaningful logic.
-   - Validate **expected behavior**, **failure paths**, input variations, boundary conditions, and potential panics.
-   - Tests must be **isolated, deterministic, and repeatable**.
+   - Cover all exported functions and meaningful unexported methods.
+   - Validate expected behavior, failure paths, input variations, boundary conditions, and panics.
+   - Tests must be isolated, deterministic, and repeatable.
 
 5. Output Requirements
-   - Provide the **full updated or new `<file>_test.go` file**.
+   - Provide the **full updated or new `<file>_test.go`**.
    - Include any **generated or updated mocks** (`<file>_mock.go`) if applicable.
-   - The code **must compile** and all tests **must pass** with `go test ./...`.
-   - Confirm that **coverage for this file reaches at least 80%**.
+   - All generated files **must compile** and pass `go test ./...`.
+   - Confirm that **coverage reaches at least 80%**.
 
 6. Final Goal
-   - Produce a **production-quality Go test file** that:
-     - Improves coverage to at least 80%.
-     - Tests all main flows and edge cases.
-     - Uses mocks correctly.
-     - Follows the repository's **existing test patterns**.
-     - **Avoids build errors, failing tests, or redundant tests**.
+   - Produce production-quality Go test and mock files that:
+     - Improve coverage to at least 80%.
+     - Test all main flows and edge cases.
+     - Use mocks correctly.
+     - Follow repository patterns.
+     - Avoid build errors, failing tests, or redundant tests.
+
+# FILE OUTPUT INSTRUCTIONS
+# - Write the test code to `<filepath>_test.go`.
+# - If mocks are required, write them to `<filepath>_mock.go`.
+# - Ensure that any existing code in these files is preserved and extended, not overwritten unnecessarily.
