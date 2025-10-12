@@ -28,7 +28,6 @@ jobs:
         run: |
           curl -fsS https://cursor.com/install | bash
           echo "$HOME/.cursor/bin" >> $GITHUB_PATH
-          cursor-agent --version
 
       - name: Export Cursor API key
         env:
@@ -44,9 +43,12 @@ jobs:
         run: |
           git fetch origin develop
           CHANGED=$(git diff --name-only origin/develop...HEAD | grep '\.go$' | grep -v '_test.go' | grep -v '_mock.go' || true)
+          echo "Changed Go files detected:"
+          echo "$CHANGED"
           echo "changed_files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+
 
       - name: Generate tests for changed files
         if: steps.changed.outputs.changed_files != ''

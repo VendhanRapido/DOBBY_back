@@ -1,4 +1,7 @@
 HIGH PRIORITY: All instructions below must be strictly followed. The generated code **must compile**, **all tests must pass**, and **redundant tests or failing flows are unacceptable**.
+# ONLY generate Go code. DO NOT include any human-readable summary, explanations, or comments about coverage. 
+# Your output MUST be a valid Go _test.go file that compiles and passes all tests.
+# Start generating the code here:
 
 You are an expert Go programmer. Your task is to create **high-quality Go test cases** for the following file in this repository:
 

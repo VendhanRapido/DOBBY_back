@@ -23,7 +23,7 @@ sed "s|{{filepath}}|${FILE}|g" "$PROMPT_FILE" > "$TMP_PROMPT"
 echo "Generating tests for: $FILE"
 
 # Run cursor-agent using the prompt
-cursor-agent run "$(cat "$TMP_PROMPT")" --print
+cursor-agent run "$(cat "$TMP_PROMPT")" --force
 
 # Cleanup
 rm -f "$TMP_PROMPT"
