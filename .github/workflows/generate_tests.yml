@@ -42,12 +42,22 @@ jobs:
         id: changed
         run: |
           git fetch origin develop
-          CHANGED=$(git diff --name-only origin/develop...HEAD | grep '\.go$' | grep -v '_test.go' | grep -v '_mock.go' || true)
+          CHANGED=$(git diff --name-only origin/develop...HEAD \
+            | grep '\.go$' \
+            | grep -v '_test.go' \
+            | grep -v '_mock.go' \
+            | sort -u || true)
+
           echo "Changed Go files detected:"
           echo "$CHANGED"
-          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+
+          # Trim trailing newlines and write to output cleanly
+          {
+            echo "changed_files<<EOF"
+            echo "$CHANGED"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
 
 
       - name: Generate tests for changed files
@@ -55,36 +65,32 @@ jobs:
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
         run: |
-          # Read each line into an array safely
-          IFS=$'\n' read -r -a files <<< "${{ steps.changed.outputs.changed_files }}"
+          echo "Changed files:"
+          echo "${{ steps.changed.outputs.changed_files }}" | cat -A  # Debug print to visualize
 
-          for file in "${files[@]}"; do
-            if [[ -n "$file" ]]; then
+          # Process unique, non-empty lines
+          echo "${{ steps.changed.outputs.changed_files }}" \
+          | awk '!seen[$0]++ && NF' \
+          | while read -r file; do
               echo "Generating tests for: $file"
               scripts/generate_tests_for_file.sh "$file"
-            fi
-          done
+            done
+
 
       - name: Run go test
         run: |
           go test ./... -v -cover
 
       - name: Commit generated files (if any)
-      run: |
-        git config --global user.email "cursor-bot@users.noreply.github.com"
-        git config --global user.name "cursor-bot"
+        run: |
+          git config --global user.email "cursor-bot@users.noreply.github.com"
+          git config --global user.name "cursor-bot"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No new tests to commit."
+          else
+            git commit -m "chore: auto-generate tests with cursor-agent"
+            git push origin HEAD:${{ github.head_ref }}
+          fi
 
-        git add -A
-
-        if git diff --cached --quiet; then
-          echo "No new tests to commit."
-        else
-          git commit -m "chore: auto-generate tests with cursor-agent"
-
-          # Try to push, but first pull remote changes to avoid conflicts
-          git fetch origin $GITHUB_HEAD_REF
-          git pull --rebase origin $GITHUB_HEAD_REF || echo "No changes to rebase"
-          
-          git push origin HEAD:$GITHUB_HEAD_REF
-        fi
 
