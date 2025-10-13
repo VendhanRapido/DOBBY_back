@@ -42,22 +42,12 @@ jobs:
         id: changed
         run: |
           git fetch origin develop
-          CHANGED=$(git diff --name-only origin/develop...HEAD \
-            | grep '\.go$' \
-            | grep -v '_test.go' \
-            | grep -v '_mock.go' \
-            | sort -u || true)
-
+          CHANGED=$(git diff --name-only origin/develop...HEAD | grep '\.go$' | grep -v '_test.go' | grep -v '_mock.go' || true)
           echo "Changed Go files detected:"
           echo "$CHANGED"
-
-          # Trim trailing newlines and write to output cleanly
-          {
-            echo "changed_files<<EOF"
-            echo "$CHANGED"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
 
       - name: Generate tests for changed files
@@ -65,17 +55,15 @@ jobs:
         env:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
         run: |
-          echo "Changed files:"
-          echo "${{ steps.changed.outputs.changed_files }}" | cat -A  # Debug print to visualize
+          # Read each line into an array safely
+          IFS=$'\n' read -r -a files <<< "${{ steps.changed.outputs.changed_files }}"
 
-          # Process unique, non-empty lines
-          echo "${{ steps.changed.outputs.changed_files }}" \
-          | awk '!seen[$0]++ && NF' \
-          | while read -r file; do
+          for file in "${files[@]}"; do
+            if [[ -n "$file" ]]; then
               echo "Generating tests for: $file"
               scripts/generate_tests_for_file.sh "$file"
-            done
-
+            fi
+          done
 
       - name: Run go test
         run: |
