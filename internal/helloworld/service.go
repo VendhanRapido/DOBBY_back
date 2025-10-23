@@ -12,5 +12,5 @@ func NewService() Service {
 }
 
 func (s *serviceImpl) HelloWorld() string {
-	return "Hello World!!!"
+	return "Hello World!"
 }

@@ -17,5 +17,5 @@ func NewHandler(s Service) *Handler {
 }
 
 func (h *Handler) helloWorldHandler(ctx *gin.Context) {
-	ctx.JSON( http.StatusOK , h.service.HelloWorld() )
+	ctx.JSON(http.StatusOK, h.service.HelloWorld())
 }
