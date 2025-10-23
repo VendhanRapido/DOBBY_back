@@ -1,0 +1,22 @@
+environment: staging
+preemptible_workload: true
+canary:
+  enabled: false
+
+hpa:
+  enabled: false
+
+replicaCount: 1
+
+resources:
+  enabled: false
+
+livenessProbe:
+  enabled: true
+  path: /sanity
+
+readinessProbe:
+  enabled: true
+  path: /health
+
+team: paathshaala

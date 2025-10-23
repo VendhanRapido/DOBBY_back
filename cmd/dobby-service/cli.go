@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/roppenlabs/dobby-service/internal/config"
+	"github.com/roppenlabs/dobby-service/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -16,6 +19,11 @@ func initCLI() *cobra.Command {
 }
 
 func startCommand() *cobra.Command {
+	if err := utils.ExtractStaticFiles(); err != nil {
+		fmt.Printf("Failed to initialize file system: %v\n", err)
+		panic(err)
+	}
+
 	var startCmd = &cobra.Command{
 		Use:   "start",
 		Short: "Starts the service",
@@ -27,7 +35,11 @@ func startCommand() *cobra.Command {
 
 			config.InitConfig(configFile)
 
-			serverDependencies, _ := InitDependencies()
+			serverDependencies, err := InitDependencies()
+			if err != nil {
+				fmt.Println(err)
+				panic(err)
+			}
 			serverDependencies.server.Run(serverDependencies.handlers)
 		},
 	}

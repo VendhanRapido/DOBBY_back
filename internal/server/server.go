@@ -18,27 +18,29 @@ type Server struct {
 	config       *config.Config
 	engine       *gin.Engine
 	routerGroups RouterGroups
+	middleware   Middleware
 }
 
 type RouterGroups struct {
 	rootRouter *gin.Engine
 }
 
-func NewServer(c *config.Config) *Server {
+func NewServer(c *config.Config, m Middleware) *Server {
 	if c.IsProductionEnv() {
 		log.Println("Setting gin server to release mode for production environment")
 		gin.SetMode(gin.ReleaseMode)
 	} else {
 		gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
-			log.Println(fmt.Sprintf("Endpoint %s is declared via handler %s, method: %v", absolutePath, handlerName, httpMethod))
+			log.Printf("%s", fmt.Sprintf("Endpoint %s is declared via handler %s, method: %v", absolutePath, handlerName, httpMethod))
 		}
 	}
 	engine := gin.New()
 	engine.Use(gin.Recovery())
 
 	return &Server{
-		config: c,
-		engine: engine,
+		config:     c,
+		engine:     engine,
+		middleware: m,
 		routerGroups: RouterGroups{
 			rootRouter: engine,
 		},
@@ -73,7 +75,8 @@ func waitForShutdown(server *http.Server) {
 	defer cancel()
 	err := server.Shutdown(ctx)
 	if err != nil {
-		log.Println(fmt.Sprintf("[error] Server forced to shutdown: %v", err))
+		log.Printf("%s", fmt.Sprintf("[error] Server forced to shutdown: %v", err))
 	}
+	os.RemoveAll("staticfiles")
 	log.Println("server shutdown complete")
 }

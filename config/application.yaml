@@ -7,4 +7,28 @@ server:
 
 environment: development
 
-profilingEnabled: true
+profilingEnabled: false
+
+kafka:
+  clusterInfo:
+    backendKafka: localhost:9092
+  timeoutInMS:
+    createTopic: 30000
+    deleteTopic: 30000
+    getMetadata: 5000
+  validations:
+    minReplicationFactor: 1
+    maxReplicationFactor: 1
+    minNumPartitions: 1
+    maxNumPartitions: 1000
+    minRetentionInMS: 5000
+    maxRetentionInMS: 10000
+    topicNameConventionPattern: "^[a-zA-Z][a-zA-Z0-9_-]*$"
+
+clients:
+  entities:
+    svc:
+      host: "http://rapido-entities.svc.staging.internal"
+      port: "80"
+    timeoutInMS:
+      getUser: 5000

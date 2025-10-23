@@ -1,0 +1,20 @@
+modules:
+  - id: 'kafka'
+    name: kafka
+    description: Apache Kafka is a distributed event streaming platform used for building real-time data pipelines and streaming apps.
+    operations:
+      - invalid: op-list-topics
+        name: list Topics
+        desc: lists all the topics in a cluster
+        schemaId: schema-1
+        action : read
+      - invalid: op-create-topic
+        name: create a Topic
+        desc: ''
+        schemaId: schema-2
+        action : write
+      - id: op-delete-topic
+        name: delete a Topic
+        desc: ''
+        schemaId: schema-3
+        inval

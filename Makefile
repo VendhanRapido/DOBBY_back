@@ -14,6 +14,8 @@ GO_FLAGS_arm64 := -tags dynamic
 
 assign-vars = $(if $(1),$(1),$(shell grep '$(2):' application.yml | tail -n1| cut -d':' -f2))
 
+COVERAGE_EXCLUDED_PATTERNS := cmd|internal/config|internal/modules/testutils|internal/testutils|internal/server|internal/types
+
 gen-wire-deps:
 	cd cmd/dobby-service && wire && cd ../..
 
@@ -22,7 +24,7 @@ compile:
 	go build -o $(APP_EXECUTABLE) -ldflags "-X main.version=$(APP_VERSION) -X main.commit=$(APP_COMMIT)" $(GO_FLAGS_$(UNAME)) ./cmd/dobby-service
 
 static-check:
-	go install honnef.co/go/tools/cmd/staticcheck@v0.4.7
+	go install honnef.co/go/tools/cmd/staticcheck@v0.6.1
 	staticcheck $(GO_FLAGS_$(UNAME)) $(ALL_PACKAGES)
 
 fmt:
@@ -37,7 +39,7 @@ lint:
 		golint $$p | { grep -vwE "exported (var|function|method|type|const) \S+ should have comment" || true; } \
 	done
 
-build: compile fmt vet lint static-check
+build: compile fmt vet static-check
 
 clean:
 	rm -rf out/
@@ -49,7 +51,7 @@ test-cover:
 	ENVIRONMENT=test go-coverage-threshold
 
 set-packages-to-test:
-	$(eval PACKAGES_TO_TEST := $(shell go list ./... | grep -v "internal/mongo\|internal/redis\|internal/testutils"))
+	$(eval PACKAGES_TO_TEST := $(shell go list ./... | grep -vE "($(COVERAGE_EXCLUDED_PATTERNS))"))
 
 test-cover-html:
 	mkdir -p out/

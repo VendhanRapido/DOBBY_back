@@ -7,3 +7,27 @@ server:
 
 environment: {{key "rapido/dobby-service/svc/environment"}}
 profilingEnabled: {{key "rapido/dobby-service/svc/profilingEnabled"}}
+
+kafka:
+  clusterInfo:
+    backendKafka: {{key "rapido/kafka/broker/hosts"}}
+  timeoutInMS :
+    createTopic: {{key "rapido/dobby-service/kafka/createTopicTimeoutInMS"}}
+    deleteTopic : {{key "rapido/dobby-service/kafka/deleteTopicTimeoutInMS"}}
+    getMetadata : {{key "rapido/dobby-service/kafka/getMetadataTimeoutInMS"}}
+  validations:
+    minReplicationFactor: {{key "rapido/dobby-service/kafka/minReplicationFactor"}}
+    maxReplicationFactor: {{key "rapido/dobby-service/kafka/maxReplicationFactor"}}
+    minNumPartitions: {{key "rapido/dobby-service/kafka/minNumPartitions"}}
+    maxNumPartitions: {{key "rapido/dobby-service/kafka/maxNumPartitions"}}
+    minRetentionInMS: {{key "rapido/dobby-service/kafka/minRetentionInMS"}}
+    maxRetentionInMS: {{key "rapido/dobby-service/kafka/maxRetentionInMS"}}
+    topicNameConventionPattern: {{key "rapido/dobby-service/kafka/topicNameConventionPattern"}}
+
+clients:
+  entities:
+    svc:
+      host: {{ key "rapido/entities/svc/host" }}
+      port: {{ key "rapido/entities/svc/port" }}
+    timeoutInMS:
+      getUser:  {{key "rapido/dobby-service/timeoutsInMS/getUserTimeoutInMS"}}

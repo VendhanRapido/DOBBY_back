@@ -7,23 +7,46 @@
 package main
 
 import (
+	"github.com/roppenlabs/dobby-service/internal/accesscontrol"
+	"github.com/roppenlabs/dobby-service/internal/clients/entities"
 	"github.com/roppenlabs/dobby-service/internal/config"
 	"github.com/roppenlabs/dobby-service/internal/health"
-	"github.com/roppenlabs/dobby-service/internal/helloworld"
+	"github.com/roppenlabs/dobby-service/internal/modules"
+	"github.com/roppenlabs/dobby-service/internal/modules/kafka"
+	"github.com/roppenlabs/dobby-service/internal/modules/kafka/helpers"
+	"github.com/roppenlabs/dobby-service/internal/modules/kafka/services"
+	"github.com/roppenlabs/dobby-service/internal/modules/kafka/validators"
 	"github.com/roppenlabs/dobby-service/internal/server"
+	"github.com/roppenlabs/dobby-service/internal/utils"
+	"github.com/roppenlabs/dobby-service/internal/utils/filereader"
 )
 
 // Injectors from di.go:
 
 func InitDependencies() (ServerDependencies, error) {
 	configConfig := config.GetConfig()
-	serverServer := server.NewServer(configConfig)
+	accessControlAdapter, err := accesscontrol.NewAccessControlAdapter()
+	if err != nil {
+		return ServerDependencies{}, err
+	}
+	accessControlService := accesscontrol.NewAccessControlService(accessControlAdapter)
+	fileReaderFactory := filereader.ProvideFileReaderFactory()
+	actionMapping := accesscontrol.NewActionMapping(fileReaderFactory)
+	entitiesClient := entitiesclient.NewEntitiesClient(configConfig)
+	middleware := server.NewMiddleware(accessControlService, actionMapping, entitiesClient)
+	serverServer := server.NewServer(configConfig, middleware)
 	handler := health.NewHandler()
-	service := helloworld.NewService()
-	helloworldHandler := helloworld.NewHandler(service)
+	kafkaClient := kafkahelpers.NewKafkaClient()
+	clusterUtils := utils.NewClusterUtils(configConfig)
+	service := kafkaservices.NewService(kafkaClient, clusterUtils, configConfig)
+	validator := validators.NewValidator(configConfig)
+	kafkaHandler := kafka.NewHandler(service, validator)
+	modulesService := modules.NewService(actionMapping, fileReaderFactory)
+	modulesHandler := modules.NewHandler(modulesService, accessControlService)
 	handlers := server.Handlers{
-		HealthHandler:     handler,
-		HelloWorldHandler: helloworldHandler,
+		HealthHandler:  handler,
+		KafkaGroup:     kafkaHandler,
+		ModulesHandler: modulesHandler,
 	}
 	serverDependencies := ServerDependencies{
 		config:   configConfig,

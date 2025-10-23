@@ -2,8 +2,9 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"strconv"
+
+	"github.com/spf13/viper"
 )
 
 var AppConfig Config
@@ -13,6 +14,8 @@ type Config struct {
 	Server           ServerConfig
 	Environment      string
 	ProfilingEnabled bool
+	Kafka            KafkaConfig
+	Clients          Clients
 }
 
 type LogConfig struct {
@@ -22,6 +25,24 @@ type LogConfig struct {
 type ServerConfig struct {
 	Host string
 	Port int
+}
+
+type SvcConfig struct {
+	Host string
+	Port string
+}
+
+type Clients struct {
+	Entities Entities
+}
+
+type Entities struct {
+	Svc         SvcConfig
+	TimeoutInMS EntitiesTimeouts
+}
+
+type EntitiesTimeouts struct {
+	GetUser int `mapstructure:"getUser"`
 }
 
 func InitDefaultConfig() *Config {
@@ -55,14 +76,6 @@ func InitConfig(configname string) *Config {
 
 func GetConfig() *Config {
 	return &AppConfig
-}
-
-func (c *Config) LogLevel() string {
-	if c.Log.Level == "" {
-		return "info"
-	}
-
-	return c.Log.Level
 }
 
 func (c *Config) IsProductionEnv() bool {

@@ -1,0 +1,12 @@
+# sub , obj , act
+
+p, user, kafka, read
+p, developer, kafka, write
+p, Quality, kafka, read
+p, Super Admin, kafka,write
+
+
+# heirarchy
+
+g,Super Admin,developer
+g,hailManager,Super Admin

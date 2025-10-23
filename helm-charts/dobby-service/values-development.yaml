@@ -1,4 +1,7 @@
 environment: development
+preemptible_workload: true
+canary:
+  enabled: false
 
 hpa:
   enabled: false
@@ -8,4 +11,12 @@ replicaCount: 1
 resources:
   enabled: false
 
-preemptible_workload: true
+livenessProbe:
+  enabled: true
+  path: /sanity
+
+readinessProbe:
+  enabled: true
+  path: /health
+
+team: paathshaala

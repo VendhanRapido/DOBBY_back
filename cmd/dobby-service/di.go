@@ -5,10 +5,15 @@ package main
 
 import (
 	"github.com/google/wire"
+	"github.com/roppenlabs/dobby-service/internal/accesscontrol"
+	"github.com/roppenlabs/dobby-service/internal/clients"
 	"github.com/roppenlabs/dobby-service/internal/config"
 	"github.com/roppenlabs/dobby-service/internal/health"
-	"github.com/roppenlabs/dobby-service/internal/helloworld"
+	"github.com/roppenlabs/dobby-service/internal/modules"
+	"github.com/roppenlabs/dobby-service/internal/modules/kafka"
 	"github.com/roppenlabs/dobby-service/internal/server"
+	"github.com/roppenlabs/dobby-service/internal/utils"
+	"github.com/roppenlabs/dobby-service/internal/utils/filereader"
 )
 
 type ServerDependencies struct {
@@ -22,9 +27,14 @@ func InitDependencies() (ServerDependencies, error) {
 		wire.Struct(new(ServerDependencies), "*"),
 		wire.Struct(new(server.Handlers), "*"),
 		server.WireSet,
-		helloworld.WireSet,
 		health.WireSet,
+		modules.WireSet,
+		clients.WireSet,
 		config.GetConfig,
+		kafka.WireSet,
+		utils.WireSet,
+		accesscontrol.WireSet,
+		filereader.WireSet,
 	)
 
 	return ServerDependencies{}, nil
