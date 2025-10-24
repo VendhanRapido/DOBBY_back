@@ -88,7 +88,7 @@ jobs:
           git checkout -b "$BRANCH_NAME"
 
           # Stage changes
-          git add $(git ls-files | grep -E '(_test\.go|_mock\.go)$' || true)
+          find . -type f \( -name '*_test.go' -o -name '*_mock.go' \) -print0 | xargs -0 git add
 
           # Only commit if there are changes
           if git diff --cached --quiet; then
