@@ -63,7 +63,7 @@ jobs:
           echo "📂 Files to process:"
           echo "${{ steps.changed.outputs.changed_files }}"
 
-          IFS=$'\n' read -r -a files <<< ${{ steps.changed.outputs.changed_files }}
+          IFS=$'\n' read -r -a files <<< "${{ steps.changed.outputs.changed_files }}"
 
           for file in "${files[@]}"; do
             if [[ -n "$file" ]]; then
