@@ -20,10 +20,10 @@ fi
 TMP_PROMPT="$(mktemp)"
 sed "s|{{filepath}}|${FILE}|g" "$PROMPT_FILE" > "$TMP_PROMPT"
 
-echo "Generating tests for: $FILE"
+echo "Generating tests for (script): $FILE"
 
 # Run cursor-agent using the prompt
-cursor-agent run "$(cat "$TMP_PROMPT")" --force
+cursor-agent run "$(cat "$TMP_PROMPT")" --force --quiet --no-input --no-progress
 
 # Cleanup
 rm -f "$TMP_PROMPT"
