@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 FILE="$1"  # e.g. internal/health/handler.go
 PROMPT_FILE=".cursor/prompts/generate_tests.txt"
