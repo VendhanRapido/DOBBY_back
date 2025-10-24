@@ -2,7 +2,8 @@
 set -euo pipefail
 
 # Simulate changed files (multiline string)
-CHANGED_FILES=$'internal/helloworld/handler.go\ninternal/helloworld/service.go'
+CHANGED_FILES=$'internal/helloworld/handler.go
+internal/helloworld/service.go'
 
 echo "📂 Files to process:"
 echo "$CHANGED_FILES"
