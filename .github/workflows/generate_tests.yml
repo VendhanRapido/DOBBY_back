@@ -63,13 +63,15 @@ jobs:
           echo "📂 Files to process:"
           echo "${{ steps.changed.outputs.changed_files }}"
 
-          # Loop through each changed file safely
-          while IFS= read -r file; do
+          IFS=$'\n' read -r -a files <<< ${{ steps.changed.outputs.changed_files }}
+
+          for file in "${files[@]}"; do
             if [[ -n "$file" ]]; then
               echo "Generating tests for: $file"
               scripts/generate_tests_for_file.sh "$file"
             fi
-          done <<< "${{ steps.changed.outputs.changed_files }}"
+          done
+
 
       - name: Run go test
         run: |
