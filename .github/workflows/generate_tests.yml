@@ -62,14 +62,17 @@ jobs:
         run: |
           echo ":open_file_folder: Files to process:"
           echo "${{ steps.changed.outputs.changed_files }}"
-          IFS=$'\n' read -r -a files <<< "${{ steps.changed.outputs.changed_files }}"
-          for file in "${files[@]}"; do
-            if [[ -n "$file" ]]; then
-              echo "Generating tests for: $file"
-              scripts/generate_tests_for_file.sh "$file"
-            fi
-          done
 
+          files=()
+          while IFS= read -r line; do
+            [[ -n "$line" ]] && files+=("$line")
+          done <<< "${{ steps.changed.outputs.changed_files }}"
+
+          for file in "${files[@]}"; do
+            echo "Generating tests for: $file"
+            /scripts/generate_tests_for_file.sh "$file"
+          done
+          
 
       - name: Run go test
         run: |
